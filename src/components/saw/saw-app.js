@@ -5,7 +5,6 @@ import { auth, db, dbf, CheckProcessRun, GetDataSaw, addTotaStok, GetTolgaItemSi
 import { Link  } from 'react-router-dom';
 //Notes = new Meteor.Collection("notes");
 import LoadingPage from '../loading'
-import update from 'react-addons-update';
 //Meteor.subscribe("getNotes");
 
 export default class SawApp extends React.Component {
