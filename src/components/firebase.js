@@ -22,7 +22,7 @@ const dbf = firebase.firestore();
 const auth = firebase.auth();
 
 function GetNotes(callback){
-  fetch('http://localhost:3005/').then(function(response) {
+  fetch('http://178.62.203.163:3005/').then(function(response) {
     return response.json()
   }).then(function(myJson) {
     callback(myJson)
