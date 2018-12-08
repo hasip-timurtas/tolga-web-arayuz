@@ -1,10 +1,13 @@
 
+
+.modal-dialog{
+    top:200px;
+}
+.size {cursor: pointer;}
+.active-size{color: green;}
+.deactive-size{color:red}
 /*****************globals*************/
-body {
-    font-family: 'open sans';
-    overflow-x: hidden; }
-  
-  img {
+img {
     max-width: 100%; }
   
   .preview {

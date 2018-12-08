@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { auth } from './firebase'
-import MhtModal from './mht-modal'
+import {MhtModal} from './mht-modal'
 
 class Login extends Component {
     constructor() {
@@ -105,7 +105,6 @@ class Login extends Component {
         </div>
       </div>
       <MhtModal 
-        //openModal={this.openModal.bind(this)}
         closeModal={event => this.setState({modalIsOpen: false})}
         modalIsOpen={modalIsOpen}
         modalTitle='Opps! Something is wrong..'

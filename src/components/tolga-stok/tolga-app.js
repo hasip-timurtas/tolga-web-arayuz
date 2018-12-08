@@ -1,12 +1,13 @@
 import React from 'react';
+import RecentlyAdded from './RecentlyAdded';
 import SearchNote from './SearchNote';
 import ShowNote from './ShowNote';
-import { auth, db, dbf, CheckProcessRun, GetDataSaw, addTotaStok, GetTolgaItemSizes } from '../firebase'
+import { auth, db, dbf, CheckProcessRun, GetDataTolgaStok, addTotaStok } from '../firebase'
 import { Link  } from 'react-router-dom';
 //Notes = new Meteor.Collection("notes");
 import LoadingPage from '../loading'
-import update from 'react-addons-update';
 //Meteor.subscribe("getNotes");
+import {MhtModal, Alert} from '../mht-modal'
 
 export default class SawApp extends React.Component {
     constructor() {
@@ -18,29 +19,34 @@ export default class SawApp extends React.Component {
             runProcess: false,
             notes: [],
             searchText: '',
-            sizes:[]
+            modalIsOpen: false,
+            modalContent:'Hasip',
+            alertType: 'success',
+            alertMessage: 'Hasip',
+            alertIsOpen: false,
+            bedens: {s: false, m:false, l:false, xl:false, xxl:false}
         }
     }
 
     componentDidMount(){
         CheckProcessRun(runProcess => {
             this.setState({runProcess})
-            GetDataSaw(notes=> this.setState({notes}))// sayfa ilk yüklendiğinde ve her process güncellendiğinde datayıda güncelle
+            GetDataTolgaStok(notes=> this.setState({notes}))// sayfa ilk yüklendiğinde ve her process güncellendiğinde datayıda güncelle
         })
-        //GetNotes(notes=> this.setState({notes: notes.slice(0,15)}))
+
+       // this.showAlert('success', 'bu bir tankerdir!')
     }
 
     showNote(note) {
-        GetTolgaItemSizes(note.stokKodu, validSizes=>{
-            const fullSizes = [{name: 's', active:false},{name: 'm', active:false},{name: 'l', active:false},{name: 'xl', active:false},{name: 'xxl', active:false}]
-            const sizes = fullSizes.filter(e=> {
-                if(validSizes.includes(e.name)){
-                    e.active = true
-                }
-                return true
-            })
-            this.setState({sizes})
+        const fullSizes = [{name: 's', active:false},{name: 'm', active:false},{name: 'l', active:false},{name: 'xl', active:false},{name: 'xxl', active:false}]
+        const sizes = fullSizes.filter(e=> {
+            if(note.validBedens.includes(e.name)){
+                e.active = true
+            }
+            return true
         })
+        this.setState({sizes})
+        
         this.setState({selectedNote: note});
         this.setState({
             selectedNote1: {
@@ -65,6 +71,13 @@ export default class SawApp extends React.Component {
     addMyStock(item){
         item.validBedens = this.state.sizes.filter(e=> e.active).map(e=> e.name)
         addTotaStok(item)
+        GetDataTolgaStok(notes=> this.setState({notes}))// sayfa ilk yüklendiğinde ve her process güncellendiğinde datayıda güncelle
+        if(item.validBedens.length == 0) this.setState({ selectedNote: [] }) // bedenden sıfır kaldıysa arka tarafta zaten refresh yapıyor sende selected noteyi refreshle
+    }
+
+    showAlert(alertType, alertMessage){
+        this.setState({alertIsOpen: true, alertType, alertMessage})
+        setTimeout(() => this.setState({alertIsOpen:false}) , 2000);
     }
 
     checkForNote() {
@@ -87,7 +100,17 @@ export default class SawApp extends React.Component {
     }
 
     render(){
-        return this.state.runProcess ? <LoadingPage /> : (this.state.newNote ? this.newNoteRender() : this.showNoteRender())
+        const {modalIsOpen, modalContent, alertIsOpen, alertMessage, alertType} = this.state
+        return <div> 
+            <Alert alertIsOpen={alertIsOpen} type={alertType} message={alertMessage}  />
+            {this.state.runProcess ? <LoadingPage /> : (this.state.newNote ? this.newNoteRender() : this.showNoteRender())}
+            <MhtModal 
+                closeModal={event => this.setState({modalIsOpen: false})}
+                modalIsOpen={modalIsOpen}
+                modalTitle='Opps! Something is wrong..'
+                modalContent={modalContent}
+            />
+        </div>
     }
 
 
@@ -112,15 +135,24 @@ export default class SawApp extends React.Component {
     }
 
     showNoteRender() {
+        const {selectedNote, searchText, notes} = this.state
         return (
             <div className="row">
-                <div className="col-md-10">
-                    <h2>Saw Türkiye Stok</h2>
-                    <SearchNote showNote={this.showNote.bind(this)} selectedNotem={this.state.selectedNote} UpdateSearch={e=>this.setState({searchText: e})} 
-                    searchText={this.state.searchText}
-                    notes={this.state.notes} />
+                <div className="col-md-8">
+                    <h2>Tolga Stok</h2> <br/>
+                    <SearchNote showNote={this.showNote.bind(this)} selectedNotem={selectedNote} UpdateSearch={e=>this.setState({searchText: e})} 
+                    searchText={searchText}
+                    notes={notes} />
                     <hr/>
                     {this.checkForNote()}
+                    <button type="button"
+                        className="btn btn-success delete-note"
+                        onClick={e => this.setState({newNote:true})}>New Item</button>
+                </div>
+                <div className="col-md-4">
+                    <RecentlyAdded notes={notes}  selectedNotem={selectedNote}
+                                   showNote={this.showNote.bind(this) }
+                    />
                 </div>
             </div>
 

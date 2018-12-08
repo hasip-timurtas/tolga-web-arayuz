@@ -15,26 +15,14 @@ if (!firebase.apps.length) {
   firebase.initializeApp(config);
 }
 
-
+// server url
+let url = 'http://178.62.203.163:3005/'
+//url = 'http://localhost:3005/' // TEST
 
 const db = firebase.database();
 const dbf = firebase.firestore();
 const auth = firebase.auth();
 
-function GetNotes(callback){
-  fetch('http://178.62.203.163:3005/').then(function(response) {
-    return response.json()
-  }).then(function(myJson) {
-    callback(myJson)
-  }).catch(e=> console.log(e))
-}
-
-function CheckProcessRun(callback){
-  db.ref('tolga/saw/data-processing').on('value', snapshot => {
-    let data = snapshot.val()
-    callback(data)
-  })
-}
 
 //moment.lang("en-US")
 
@@ -83,14 +71,60 @@ function GetCode(callback){
   db.ref('cry/eval-buy-sell').once('value').then(snapshot => callback(snapshot.val()))
 }
 
+function CheckProcessRun(callback){
+  db.ref('tolga/saw/data-processing').on('value', snapshot => {
+    let data = snapshot.val()
+    callback(data)
+  })
+}
+
+
+function GetDataSaw(callback){
+  fetch(url).then(function(response) {
+    return response.json()
+  }).then(function(myJson) {
+    callback(myJson)
+  }).catch(e=> console.log(e))
+}
+
+function GetDataTolgaStok(callback){
+  fetch(url+'tolgaStok').then(function(response) {
+    return response.json()
+  }).then(function(myJson) {
+    callback(myJson)
+  }).catch(e=> console.log(e))
+}
+
+function addTotaStok(item){
+  fetch(url+'addToTolgaStok', {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(item)
+  });
+}
+
+function GetTolgaItemSizes(stokKodu, callback){
+  fetch(url+'getItemSizes/'+ stokKodu).then(function(response) {
+    return response.json()
+  }).then(function(myJson) {
+    callback(myJson)
+  }).catch(e=> console.log(e))
+}
+
 export {
   db,
   dbf,
   auth,
-  GetNotes,
+  GetDataSaw,
+  GetDataTolgaStok,
   GetBuySellData,
   GetAltcoinBuySellData,
   GetServers,
   GetCode,
-  CheckProcessRun
+  CheckProcessRun,
+  addTotaStok,
+  GetTolgaItemSizes
 }

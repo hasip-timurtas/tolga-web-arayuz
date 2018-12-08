@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import { db, auth } from '../components/firebase'
 import Nav from './nav.js'
+import "./style.css"
+import "./xterm-style.css"
 //const DashboardLayout = props =>{
 class DashboardLayout extends Component {
   render(){

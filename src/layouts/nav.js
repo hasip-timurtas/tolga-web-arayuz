@@ -5,8 +5,10 @@ const Nav = () =>
 <nav className="sidebar-nav">
     <ul className="nav">
         <li className="nav-item">
-            <Link className="nav-link" to={"/"}>
-            <i className="nav-icon fa fa-shopping-cart fa-3x" /> Saw</Link>
+            <Link className="nav-link" to={"/tolga-stok"}><i className="nav-icon fa fa-shopping-cart fa-3x" /> Tolga Stok</Link>
+        </li>
+        <li className="nav-item">
+            <Link className="nav-link" to={"/saw-stok"}><i className="nav-icon fa fa-shopping-cart fa-3x" /> Saw Türkiye Stok</Link>
         </li>
         <li className="nav-item">
             <Link className="nav-link" to={"/logout"}>

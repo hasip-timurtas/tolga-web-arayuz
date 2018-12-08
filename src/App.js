@@ -7,6 +7,7 @@ import DashboardLayout from './layouts/dashboard-layout'
 import EmptyLayout from './layouts/empty-layout'
 import LoadingPage from './components/loading'
 import SawApp from './components/saw/saw-app'
+import TolgaStok from './components/tolga-stok/tolga-app'
 
 class App extends Component {
 
@@ -43,7 +44,8 @@ export default App;
 const Routerlerim = ({authed}) =>
     <Router>
         <Switch>
-          <PrivateRoute authed={authed} exact path='/' layout={DashboardLayout} component={SawApp} />
+          <PrivateRoute authed={authed} exact path='/(tolga-stok|)' layout={DashboardLayout} component={TolgaStok} />
+          <PrivateRoute authed={authed} exact path='/saw-stok' layout={DashboardLayout} component={SawApp} />
           <PrivateRoute authed={authed} exact path='/logout' layout={DashboardLayout} component={Logout} />
           <PublicRoute authed={authed} path='/login' layout={EmptyLayout} component={Login} />
           <Route render={() => <h3>No Match</h3>} />

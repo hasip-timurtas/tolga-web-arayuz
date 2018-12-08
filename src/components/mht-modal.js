@@ -34,4 +34,11 @@ class MhtModal extends Component{
     }
 }
 
-export default MhtModal;
+const  Alert = (props) => {
+    const {type, message, alertIsOpen} = props
+    return alertIsOpen ? <div className={"alert alert-"+ type} role="alert"><strong>{type}!</strong> {message}</div> : ""
+    
+}
+
+
+export  {MhtModal, Alert}
