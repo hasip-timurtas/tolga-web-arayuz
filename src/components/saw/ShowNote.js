@@ -32,13 +32,18 @@ export default class ShowNote extends React.Component {
                             </div>
                             <div className="details col-md-6">
                                 <h3 className="product-title">{selectedNotem.name}</h3>
-                                <p className="product-description">{selectedNotem.description}</p>
+                                
                                 <h6 className="price">stock code:  {selectedNotem.stokKodu}</h6>
                                 <h6 className="price">current price: <span>{selectedNotem.price} TL</span></h6>
                                 <h4 className="sizes">sizes:{sizeTmp}</h4>
+                                <h6 className="price">description: </h6> <p className="product-description">{selectedNotem.description}</p>
                                 <div class="action">
                                     <button class="add-to-cart btn btn-default" onClick={e=> addMyStock(selectedNotem)} type="button">Update My Stock</button>
                                 </div>
+                                <br />
+                                <small><strong>Sizes:</strong> Yeşil olanlar stokta olanlar. Kırmızılar ise olmalanlar. Tıklayıp renk değiştirebilir. sonrada aşağıdaki butona basıp kaydedersiniz.</small>
+                                
+                                
                             </div>
                         </div>
                     </div>
