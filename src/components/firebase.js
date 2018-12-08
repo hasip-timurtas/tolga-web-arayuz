@@ -22,9 +22,16 @@ const dbf = firebase.firestore();
 const auth = firebase.auth();
 
 function GetNotes(callback){
-  db.ref('Notes').child(auth.currentUser.uid).on('value', snapshot => {
+  fetch('http://localhost:3005/').then(function(response) {
+    return response.json()
+  }).then(function(myJson) {
+    callback(myJson)
+  }).catch(e=> console.log(e))
+}
+
+function CheckProcessRun(callback){
+  db.ref('tolga/saw/data-processing').on('value', snapshot => {
     let data = snapshot.val()
-    data = data ? Object.keys(data).map(e=> ({ ...data[e], fbId: e}) ).sort((a,b)=> new Date(b.date) - new Date(a.date)) : []
     callback(data)
   })
 }
@@ -84,5 +91,6 @@ export {
   GetBuySellData,
   GetAltcoinBuySellData,
   GetServers,
-  GetCode
-}; 
+  GetCode,
+  CheckProcessRun
+}

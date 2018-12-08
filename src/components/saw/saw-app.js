@@ -2,32 +2,35 @@ import React from 'react';
 import RecentlyAdded from './RecentlyAdded';
 import SearchNote from './SearchNote';
 import ShowNote from './ShowNote';
-import { auth, db, dbf } from '../firebase'
+import { auth, db, dbf, CheckProcessRun, GetNotes } from '../firebase'
 import { Link  } from 'react-router-dom';
 //Notes = new Meteor.Collection("notes");
+import LoadingPage from '../loading'
 //Meteor.subscribe("getNotes");
 
-export default class NoteApp extends React.Component {
+export default class SawApp extends React.Component {
     constructor() {
         super();
         this.state = {
             selectedNote: [],
             selectedNote1: {_id: '', title: '', content: ''},
-            newNote: false
+            newNote: false,
+            runProcess: false,
+            notes: [],
+            searchText: ''
         }
     }
 
     componentDidMount(){
-        var doc = dbf.collection('Notes').doc(auth.currentUser.uid).onSnapshot(docSnapshot => {
-            console.log(`Received doc snapshot:`, docSnapshot.data());
-            // ...
-          }, err => {
-            console.log(`Encountered error: ${err}`);
-          });
+        CheckProcessRun(runProcess => {
+            this.setState({runProcess})
+        })
+
+        GetNotes(notes=> {
+            this.setState({notes})
+        })
         //GetNotes(notes=> this.setState({notes: notes.splice(0,15)}))
     }
-
-
 
     showNote(note) {
         this.setState({selectedNote: note});
@@ -56,7 +59,7 @@ export default class NoteApp extends React.Component {
     }
 
     render(){
-        return ( this.state.newNote ? this.newNoteRender() : this.showNoteRender())
+        return this.state.runProcess ? <LoadingPage /> : (this.state.newNote ? this.newNoteRender() : this.showNoteRender())
     }
 
 
@@ -83,18 +86,12 @@ export default class NoteApp extends React.Component {
     showNoteRender() {
         return (
             <div className="row">
-                <div className="col-md-8">
-                    <SearchNote showNote={this.showNote.bind(this)} selectedNotem={this.state.selectedNote}/>
+                <div className="col-md-10">
+                    <SearchNote showNote={this.showNote.bind(this)} selectedNotem={this.state.selectedNote} UpdateSearch={e=>this.setState({searchText: e})} 
+                    searchText={this.state.searchText}
+                    notes={this.state.notes} />
                     <hr/>
                     {this.checkForNote()}
-                    <button type="button"
-                        className="btn btn-success delete-note"
-                        onClick={e => this.setState({newNote:true})}>New Note</button>
-                </div>
-                <div className="col-md-4">
-                    <RecentlyAdded selectedNotem={this.state.selectedNote}
-                                   showNote={this.showNote.bind(this) }
-                    />
                 </div>
             </div>
 

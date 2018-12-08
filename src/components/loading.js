@@ -11,7 +11,7 @@ const LoadingPage = () =>
                     <div className="card text-white bg-primary py-5 d-md-down-none">
                         <div className="card-body text-center">
                         <div>
-                            <h2>Loading...</h2>
+                            <h2>Data Yüklemede..</h2>
                         </div>
                         </div>
                     </div>
