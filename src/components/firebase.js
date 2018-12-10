@@ -17,7 +17,7 @@ if (!firebase.apps.length) {
 
 // server url
 let url = 'http://178.62.203.163:3005/'
-//url = 'http://localhost:3005/' // TEST
+url = 'http://localhost:3005/' // TEST
 
 const db = firebase.database();
 const dbf = firebase.firestore();
@@ -114,6 +114,18 @@ function GetTolgaItemSizes(stokKodu, callback){
   }).catch(e=> console.log(e))
 }
 
+function addNewItem(data){
+  // burda kaldık data buraya geliyor. burdan servera gönderilecek.
+  fetch(url+'addNewItem', {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(data)
+  })
+}
+
 export {
   db,
   dbf,
@@ -126,5 +138,6 @@ export {
   GetCode,
   CheckProcessRun,
   addTotaStok,
-  GetTolgaItemSizes
+  GetTolgaItemSizes,
+  addNewItem
 }

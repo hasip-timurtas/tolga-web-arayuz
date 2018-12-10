@@ -6,6 +6,7 @@ import { Link  } from 'react-router-dom';
 //Notes = new Meteor.Collection("notes");
 import LoadingPage from '../loading'
 //Meteor.subscribe("getNotes");
+import {MhtModal, Alert} from '../mht-modal'
 
 export default class SawApp extends React.Component {
     constructor() {
@@ -17,7 +18,12 @@ export default class SawApp extends React.Component {
             runProcess: false,
             notes: [],
             searchText: '',
-            sizes:[]
+            sizes:[],
+            modalIsOpen: false,
+            modalContent:'Hasip',
+            alertType: 'success',
+            alertMessage: 'Hasip',
+            alertIsOpen: false
         }
     }
 
@@ -32,12 +38,20 @@ export default class SawApp extends React.Component {
     showNote(note) {
         GetTolgaItemSizes(note.stokKodu, validSizes=>{
             const fullSizes = [{name: 's', active:false},{name: 'm', active:false},{name: 'l', active:false},{name: 'xl', active:false},{name: 'xxl', active:false}]
+            //const sizes = validSizes.map(e=> ({name: e.beden, active:true, adet:e.adet}))
+            
             const sizes = fullSizes.filter(e=> {
-                if(validSizes.includes(e.name)){
+                const validSize = validSizes.find(a=> a.name == e.name)
+                if(validSize){
                     e.active = true
+                    e.adet = validSize.adet
+                }else{
+                    e.adet = 0
                 }
+
                 return true
             })
+            
             this.setState({sizes})
         })
         this.setState({selectedNote: note});
@@ -50,11 +64,18 @@ export default class SawApp extends React.Component {
         });
     }
 
-    toogleSize(size){
+    editSize(event, size){
+        const adet = Number(event.target.value)
         const copy = this.state.sizes.slice()
         copy.find(e=> {
             if(e.name == size.name){
-                e.active = !e.active
+                if(adet > 0){
+                    e.adet=adet
+                    e.active = true
+                }else{
+                    e.active=false
+                    e.adet=0
+                }
                 return true
             }
         })
@@ -62,8 +83,19 @@ export default class SawApp extends React.Component {
     }
 
     addMyStock(item){
-        item.validBedens = this.state.sizes.filter(e=> e.active).map(e=> e.name)
+        item.validBedens = this.state.sizes.filter(e=> e.active).map(e=> ({name: e.name, adet:e.adet}))
         addTotaStok(item)
+        this.showAlert('success', item.name +' başarıyla güncellendi')
+    }
+
+    showAlert(alertType, alertMessage){
+        this.setState({alertIsOpen: true, alertType, alertMessage})
+        setTimeout(() => this.setState({alertIsOpen:false}) , 3000);
+    }
+
+    showModal(modalTitle, modalContent){
+        this.setState({modalIsOpen: true, modalTitle, modalContent})
+        setTimeout(() => this.setState({modalIsOpen:false}) , 2000);
     }
 
     checkForNote() {
@@ -74,7 +106,7 @@ export default class SawApp extends React.Component {
                              titleChange={this.titleChange.bind(this)}
                              contentChange={this.contentChange.bind(this)}
                              clearNote={this.clearNote.bind(this)}
-                             toogleSize={e=> this.toogleSize(e)}
+                             editSize={(e,s)=> this.editSize(e,s)}
                              addMyStock={e=> this.addMyStock(e)}
                              sizes={this.state.sizes}
                              />;
@@ -85,8 +117,18 @@ export default class SawApp extends React.Component {
         this.setState({ selectedNote: [] });
     }
 
+
     render(){
-        return this.state.runProcess ? <LoadingPage /> : (this.state.newNote ? this.newNoteRender() : this.showNoteRender())
+        const {modalIsOpen, modalTitle, modalContent} = this.state
+        return <div> 
+            {this.state.newNote ? this.newNoteRender() : this.showNoteRender()}
+            <MhtModal 
+                closeModal={event => this.setState({modalIsOpen: false})}
+                modalIsOpen={modalIsOpen}
+                modalTitle={modalTitle}
+                modalContent={modalContent}
+            />
+        </div>
     }
 
 
@@ -111,14 +153,16 @@ export default class SawApp extends React.Component {
     }
 
     showNoteRender() {
+        const {selectedNote, searchText, notes,  alertIsOpen, alertMessage, alertType} = this.state
         return (
             <div className="row">
                 <div className="col-md-10">
                     <h2>Saw Türkiye Stok</h2>
-                    <SearchNote showNote={this.showNote.bind(this)} selectedNotem={this.state.selectedNote} UpdateSearch={e=>this.setState({searchText: e})} 
-                    searchText={this.state.searchText}
-                    notes={this.state.notes} />
+                    <SearchNote showNote={this.showNote.bind(this)} selectedNotem={selectedNote} UpdateSearch={e=>this.setState({searchText: e})} 
+                    searchText={searchText}
+                    notes={notes} />
                     <hr/>
+                    <Alert alertIsOpen={alertIsOpen} type={alertType} message={alertMessage}  />
                     {this.checkForNote()}
                 </div>
             </div>

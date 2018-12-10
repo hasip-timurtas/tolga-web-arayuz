@@ -1,9 +1,10 @@
 
+.size-adet{width: 50px;}
 
 .modal-dialog{
     top:200px;
 }
-.size {cursor: pointer;}
+.size {cursor: pointer; width:50px; float: left;}
 .active-size{color: green;}
 .deactive-size{color:red}
 /*****************globals*************/
@@ -99,8 +100,6 @@ img {
   
   .size {
     margin-right: 10px; }
-    .size:first-of-type {
-      margin-left: 40px; }
   
   .color {
     display: inline-block;

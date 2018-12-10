@@ -2,7 +2,7 @@ import React from 'react';
 import RecentlyAdded from './RecentlyAdded';
 import SearchNote from './SearchNote';
 import ShowNote from './ShowNote';
-import { auth, db, dbf, CheckProcessRun, GetDataTolgaStok, addTotaStok } from '../firebase'
+import { auth, db, dbf, CheckProcessRun, GetDataTolgaStok, addTotaStok, addNewItem } from '../firebase'
 import { Link  } from 'react-router-dom';
 //Notes = new Meteor.Collection("notes");
 import LoadingPage from '../loading'
@@ -39,12 +39,27 @@ export default class SawApp extends React.Component {
 
     showNote(note) {
         const fullSizes = [{name: 's', active:false},{name: 'm', active:false},{name: 'l', active:false},{name: 'xl', active:false},{name: 'xxl', active:false}]
+        /*
         const sizes = fullSizes.filter(e=> {
             if(note.validBedens.includes(e.name)){
                 e.active = true
             }
             return true
         })
+        */
+
+        const sizes = fullSizes.filter(e=> {
+            const validSize = note.validBedens.find(a=> a.name == e.name)
+            if(validSize){
+                e.active = true
+                e.adet = validSize.adet
+            }else{
+                e.adet = 0
+            }
+
+            return true
+        })
+
         this.setState({sizes})
         
         this.setState({selectedNote: note});
@@ -57,11 +72,18 @@ export default class SawApp extends React.Component {
         });
     }
 
-    toogleSize(size){
+    editSize(event, size){
+        const adet = Number(event.target.value)
         const copy = this.state.sizes.slice()
         copy.find(e=> {
             if(e.name == size.name){
-                e.active = !e.active
+                if(adet > 0){
+                    e.adet=adet
+                    e.active = true
+                }else{
+                    e.active=false
+                    e.adet=0
+                }
                 return true
             }
         })
@@ -73,11 +95,17 @@ export default class SawApp extends React.Component {
         addTotaStok(item)
         GetDataTolgaStok(notes=> this.setState({notes}))// sayfa ilk yüklendiğinde ve her process güncellendiğinde datayıda güncelle
         if(item.validBedens.length == 0) this.setState({ selectedNote: [] }) // bedenden sıfır kaldıysa arka tarafta zaten refresh yapıyor sende selected noteyi refreshle
+        this.showAlert('success', item.name +' başarıyla güncellendi')
     }
 
     showAlert(alertType, alertMessage){
         this.setState({alertIsOpen: true, alertType, alertMessage})
-        setTimeout(() => this.setState({alertIsOpen:false}) , 2000);
+        setTimeout(() => this.setState({alertIsOpen:false}) , 3000);
+    }
+
+    showModal(modalTitle, modalContent){
+        this.setState({modalIsOpen: true, modalTitle, modalContent})
+        setTimeout(() => this.setState({modalIsOpen:false}) , 3000);
     }
 
     checkForNote() {
@@ -88,7 +116,7 @@ export default class SawApp extends React.Component {
                              titleChange={this.titleChange.bind(this)}
                              contentChange={this.contentChange.bind(this)}
                              clearNote={this.clearNote.bind(this)}
-                             toogleSize={e=> this.toogleSize(e)}
+                             editSize={(e,s)=> this.editSize(e,s)}
                              addMyStock={e=> this.addMyStock(e)}
                              sizes={this.state.sizes}
                              />;
@@ -100,19 +128,17 @@ export default class SawApp extends React.Component {
     }
 
     render(){
-        const {modalIsOpen, modalContent, alertIsOpen, alertMessage, alertType} = this.state
+        const {modalIsOpen, modalTitle, modalContent} = this.state
         return <div> 
-            <Alert alertIsOpen={alertIsOpen} type={alertType} message={alertMessage}  />
             {this.state.runProcess ? <LoadingPage /> : (this.state.newNote ? this.newNoteRender() : this.showNoteRender())}
             <MhtModal 
                 closeModal={event => this.setState({modalIsOpen: false})}
                 modalIsOpen={modalIsOpen}
-                modalTitle='Opps! Something is wrong..'
+                modalTitle={modalTitle}
                 modalContent={modalContent}
             />
         </div>
     }
-
 
     titleChange(event) {
         this.setState({
@@ -135,7 +161,7 @@ export default class SawApp extends React.Component {
     }
 
     showNoteRender() {
-        const {selectedNote, searchText, notes} = this.state
+        const {selectedNote, searchText, notes,  alertIsOpen, alertMessage, alertType} = this.state
         return (
             <div className="row">
                 <div className="col-md-8">
@@ -144,6 +170,7 @@ export default class SawApp extends React.Component {
                     searchText={searchText}
                     notes={notes} />
                     <hr/>
+                    <Alert alertIsOpen={alertIsOpen} type={alertType} message={alertMessage}  />
                     {this.checkForNote()}
                     <button type="button"
                         className="btn btn-success delete-note"
@@ -161,19 +188,16 @@ export default class SawApp extends React.Component {
 
     addNote(event) {
         event.preventDefault();
-        var title = this.refs.title.value.trim();
-        var content = this.refs.content.value.trim();
+        var name = this.refs.name.value.trim();
+        var stokKodu = this.refs.stokKodu.value.trim();
+        var price = this.refs.price.value.trim();
+        var category = this.refs.category.value.trim();
+        var sizes = this.refs.sizes.value.trim();
+        var description = this.refs.description.value.trim();
+        var files = Array.from(this.refs.file.files)
 
-        //Meteor.call("newNote", title, content); NEW NOTE
-        const newNote = {
-            _id: '_' + Math.random().toString(36).substr(2, 9),
-            title,
-            content,
-            date: Date()
-        }
-        db.ref('Notes').child(auth.currentUser.uid).push(newNote)
-        this.refs.title.value = "";
-        this.refs.content.value = "";
+        const newNote = { name, stokKodu, price, category, sizes, description, files}
+        addNewItem(newNote)
         this.setState({newNote:false})
     }
     
@@ -183,23 +207,47 @@ export default class SawApp extends React.Component {
             <form className="new-note" onSubmit={this.addNote.bind(this)}>
                 <div className="row">
                     <div className="col-md-6 form-group">
-                            <input type="text" className="form-control" name="title" placeholder="title" ref="title"/>
+                            <input type="text" className="form-control" name="name" placeholder="name" ref="name"/>
+                    </div>
+                </div>
+                <div className="row">
+                    <div className="col-md-6 form-group">
+                            <input type="text" className="form-control" name="stokKodu" placeholder="stock code" ref="stokKodu"/>
+                    </div>
+                </div>
+                <div className="row">
+                    <div className="col-md-6 form-group">
+                            <input type="text" className="form-control" name="price" placeholder="price" ref="price"/>
+                    </div>
+                </div>
+                <div className="row">
+                    <div className="col-md-6 form-group">
+                            <input type="text" className="form-control" name="category" placeholder="category" ref="category"/>
+                    </div>
+                </div>
+                <div className="row">
+                    <div className="col-md-6 form-group">
+                        <input type="text" className="form-control" name="sizes" placeholder="Sizes   -> virgülle ayırınız. örn: s,m,xl" ref="sizes"/> <small>eğer bir bedenden birden fazla varsa örneğin 2 tane small varsa s,s</small>
+                    </div>
+                </div> 
+                <div className="row">
+                    <div className="col-md-12 form-group">
+                        <input id="file" className="form-control" type="file" name="file" ref="file" accept="image/*" multiple />
                     </div>
                 </div>
                 <div className="row">
                     <div className="col-md-12 form-group">
-                            <textarea className="form-control" name="content" placeholder="Content" rows="5"
-                                      ref="content"></textarea>
+                        <textarea className="form-control" name="description" placeholder="description" rows="5" ref="description"></textarea>
                     </div>
-                </div>
+                </div>   
                 <div className="row">
                     <div className="col-md-1 form-group">
-                            <button type="submit" className="btn btn-success add-post">Not ekle</button>
+                            <button type="submit" className="btn btn-success add-post">Add Item</button>
                     </div>
                     <div className="col-md-1 form-group">
-                            <button type="submit" className="btn btn-danger add-post" onClick={e=> this.setState({newNote:false})} >Vazgeç</button>
+                            <button type="submit" className="btn btn-danger add-post" onClick={e=> this.setState({newNote:false})} >Cancel</button>
                     </div>
-                </div>
+                </div> 
             </form>
         )
 

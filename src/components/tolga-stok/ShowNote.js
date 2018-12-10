@@ -10,8 +10,12 @@ export default class ShowNote extends React.Component {
     }
 
     render() {
-        const {selectedNotem, sizes, toogleSize, addMyStock} = this.props
-        const sizeTmp = sizes.map(e=> <span className={"size " + (e.active ? "active-size": "deactive-size")} onClick={a=> toogleSize(e)} data-toggle="tooltip" title="s">{e.name}</span>)
+        const {selectedNotem, sizes, editSize, addMyStock} = this.props
+        const sizeTmp = sizes.map(size=> <div>
+            <div className={"size " + (size.active ? "active-size": "deactive-size")} data-toggle="tooltip" title="s">{size.name}</div>
+            <input className="size-adet" type="number" value={size.adet} onChange={(event)=> editSize(event, size)} /> 
+        </div> )
+
         const images = selectedNotem.images.map((e, i)=> <div className="tab-pane" id={"pic-"+i}><img src={e} /></div>)
         const thumbs = selectedNotem.images.map((e, i)=> <li><a data-target={"pic-"+i} data-toggle="tab"><img src={e} /></a></li>)
         return (
@@ -35,7 +39,7 @@ export default class ShowNote extends React.Component {
                                 
                                 <h6 className="price">stock code:  {selectedNotem.stokKodu}</h6>
                                 <h6 className="price">current price: <span>{selectedNotem.price} TL</span></h6>
-                                <h4 className="sizes">sizes:{sizeTmp}</h4>
+                                <h4 className="sizes">sizes:<br/>{sizeTmp}</h4>
                                 <h6 className="price">description: </h6> <p className="product-description">{selectedNotem.description}</p>
                                 <div class="action">
                                     <button class="add-to-cart btn btn-default" onClick={e=> addMyStock(selectedNotem)} type="button">Update My Stock</button>
