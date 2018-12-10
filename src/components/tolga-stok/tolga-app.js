@@ -217,7 +217,7 @@ export default class SawApp extends React.Component {
         })
 */
         const newNote = { name, stokKodu, price, category, validBedens, description, files}
-        addNewItem(newNote, result=> this.setState({newNote:false}))
+        addNewItem(newNote, result=> this.showAlert('success', name +' başarıyla Eklendi.'))
     }
     
 
