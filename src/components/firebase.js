@@ -95,7 +95,7 @@ function GetDataTolgaStok(callback){
   }).catch(e=> console.log(e))
 }
 
-function addTotaStok(item){
+function addTotaStok(item, callback){
   fetch(url+'addToTolgaStok', {
     method: 'POST',
     headers: {
@@ -103,7 +103,7 @@ function addTotaStok(item){
       'Content-Type': 'application/json'
     },
     body: JSON.stringify(item)
-  });
+  }).then(e=> callback(e))
 }
 
 function GetTolgaItemSizes(stokKodu, callback){
