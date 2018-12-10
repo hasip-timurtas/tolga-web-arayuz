@@ -41,8 +41,8 @@ export default class ShowNote extends React.Component {
                                 <h6 className="price">current price: <span>{selectedNotem.price} TL</span></h6>
                                 <h4 className="sizes">sizes:<br/>{sizeTmp}</h4>
                                 <h6 className="price">description: </h6> <p className="product-description">{selectedNotem.description}</p>
-                                <div class="action">
-                                    <button class="add-to-cart btn btn-default" onClick={e=> addMyStock(selectedNotem)} type="button">Update My Stock</button>
+                                <div className="action">
+                                    <button className="add-to-cart btn btn-default" onClick={e=> addMyStock(selectedNotem)} type="button">Update My Stock</button>
                                 </div>
                             </div>
                         </div>
