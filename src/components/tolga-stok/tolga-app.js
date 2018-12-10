@@ -91,7 +91,7 @@ export default class SawApp extends React.Component {
     }
 
     addMyStock(item){
-        item.validBedens = this.state.sizes.filter(e=> e.active).map(e=> e.name)
+        item.validBedens = this.state.sizes.filter(e=> e.active).map(e=> ({name: e.name, adet: e.adet}))
         addTotaStok(item)
         GetDataTolgaStok(notes=> this.setState({notes}))// sayfa ilk yüklendiğinde ve her process güncellendiğinde datayıda güncelle
         if(item.validBedens.length == 0) this.setState({ selectedNote: [] }) // bedenden sıfır kaldıysa arka tarafta zaten refresh yapıyor sende selected noteyi refreshle

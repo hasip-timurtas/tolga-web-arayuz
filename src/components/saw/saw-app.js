@@ -83,7 +83,7 @@ export default class SawApp extends React.Component {
     }
 
     addMyStock(item){
-        item.validBedens = this.state.sizes.filter(e=> e.active).map(e=> ({name: e.name, adet:e.adet}))
+        item.validBedens = this.state.sizes.filter(e=> e.active).map(e=> ({name: e.name, adet: e.adet}))
         addTotaStok(item)
         this.showAlert('success', item.name +' başarıyla güncellendi')
     }
