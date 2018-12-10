@@ -192,10 +192,21 @@ export default class SawApp extends React.Component {
         var stokKodu = this.refs.stokKodu.value.trim();
         var price = this.refs.price.value.trim();
         var category = this.refs.category.value.trim();
-        var sizes = this.refs.sizes.value.trim();
+        //var sizes = this.refs.sizes.value.trim();
         var description = this.refs.description.value.trim();
         var files = Array.from(this.refs.file.files)
+        const allSizes = [{name:'s', adet: this.refs.sizeS.value}, {name:'m', adet:this.refs.sizeM.value}, {name:'l', adet:this.refs.sizeL.value}, {name:'xl', adet:this.refs.sizeXL.value}, {name:'xxl', adet:this.refs.sizeXXL.value}]
         const validBedens = []
+        const bedenCount = allSizes.filter(e=> e.adet > 0)
+        if(bedenCount.length == 0) this.showModal('Hata', 'Lütfen en az 1 beden giriniz.')
+        allSizes.filter(e=>{
+            if(e.adet > 0){
+                e.adet = Number(e.adet)
+                validBedens.push(e)
+            }
+        })
+        
+        /*
         sizes.split(',').filter(e=> {
             const beden = validBedens.find(a=> a.name == e)
             if(beden){ // eğer beden varsa 1 arttır.
@@ -204,7 +215,7 @@ export default class SawApp extends React.Component {
                 validBedens.push({name:e, adet:1})
             }
         })
-
+*/
         const newNote = { name, stokKodu, price, category, validBedens, description, files}
         addNewItem(newNote)
         //this.setState({newNote:false})
@@ -216,7 +227,7 @@ export default class SawApp extends React.Component {
             <form className="new-note" onSubmit={this.addNote.bind(this)}>
                 <div className="row">
                     <div className="col-md-6 form-group">
-                            <input type="text" className="form-control" name="name" placeholder="name" ref="name"/>
+                            <input type="text" className="form-control" name="name" placeholder="name" ref="name" required/>
                     </div>
                 </div>
                 <div className="row">
@@ -236,12 +247,16 @@ export default class SawApp extends React.Component {
                 </div>
                 <div className="row">
                     <div className="col-md-6 form-group">
-                        <input type="text" className="form-control" name="sizes" placeholder="Sizes   -> virgülle ayırınız. örn: s,m,xl" ref="sizes"/> <small>eğer bir bedenden birden fazla varsa örneğin 2 tane small varsa s,s</small>
+                        <div><div className="size">S</div> <input className="size-adet" defaultValue={0} type="number" name="sizeS" ref="sizeS" required/></div>
+                        <div><div className="size">M</div> <input className="size-adet" defaultValue={0} type="number" name="sizeM" ref="sizeM" required/></div>
+                        <div><div className="size">L</div> <input className="size-adet" defaultValue={0} type="number" name="sizeL" ref="sizeL" required/></div>
+                        <div><div className="size">XL</div> <input className="size-adet" defaultValue={0} type="number" name="sizeXL" ref="sizeXL" required/></div>
+                        <div><div className="size">XXL</div> <input className="size-adet" defaultValue={0} type="number" name="sizeXXL" ref="sizeXXL" required/></div>
                     </div>
                 </div> 
                 <div className="row">
                     <div className="col-md-12 form-group">
-                        <input id="file" className="form-control" type="file" name="file" ref="file" accept="image/*" multiple />
+                        <input id="file" className="form-control" type="file" name="file" ref="file" accept="image/*" multiple required/>
                     </div>
                 </div>
                 <div className="row">
