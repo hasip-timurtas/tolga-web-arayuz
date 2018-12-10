@@ -195,10 +195,19 @@ export default class SawApp extends React.Component {
         var sizes = this.refs.sizes.value.trim();
         var description = this.refs.description.value.trim();
         var files = Array.from(this.refs.file.files)
+        const validBedens = []
+        sizes.split(',').filter(e=> {
+            const beden = validBedens.find(a=> a.name == e)
+            if(beden){ // eğer beden varsa 1 arttır.
+                beden.adet = beden.adet +1
+            }else{
+                validBedens.push({name:e, adet:1})
+            }
+        })
 
-        const newNote = { name, stokKodu, price, category, sizes, description, files}
+        const newNote = { name, stokKodu, price, category, validBedens, description, files}
         addNewItem(newNote)
-        this.setState({newNote:false})
+        //this.setState({newNote:false})
     }
     
 

@@ -17,12 +17,12 @@ if (!firebase.apps.length) {
 
 // server url
 let url = 'http://178.62.203.163:3005/'
-//url = 'http://localhost:3005/' // TEST
+url = 'http://localhost:3005/' // TEST
 
 const db = firebase.database();
 const dbf = firebase.firestore();
 const auth = firebase.auth();
-
+const storage = firebase.storage();
 
 //moment.lang("en-US")
 
@@ -114,9 +114,18 @@ function GetTolgaItemSizes(stokKodu, callback){
   }).catch(e=> console.log(e))
 }
 
-function addNewItem(data){
+async function addNewItem(data){
   // burda kaldık data buraya geliyor. burdan servera gönderilecek.
-  fetch(url+'addNewItem', {
+  const uploadedPics = []
+  let index = 0
+  for (const img of data.files) {
+    await storage.ref('/pics').child(data.stokKodu).child(index+".jpg").put(img).then(e=> uploadedPics.push(e.downloadURL))
+    index++
+  }
+  data.images = uploadedPics
+  data.thumbImg = uploadedPics[0]
+  data.newItem = true
+  fetch(url+'newItem', {
     method: 'POST',
     headers: {
       'Accept': 'application/json',
