@@ -114,7 +114,7 @@ function GetTolgaItemSizes(stokKodu, callback){
   }).catch(e=> console.log(e))
 }
 
-async function addNewItem(data){
+async function addNewItem(data, callback){
   // burda kaldık data buraya geliyor. burdan servera gönderilecek.
   const uploadedPics = []
   let index = 0
@@ -132,7 +132,7 @@ async function addNewItem(data){
       'Content-Type': 'application/json'
     },
     body: JSON.stringify(data)
-  })
+  }).then(e=> callback(e))
 }
 
 export {
