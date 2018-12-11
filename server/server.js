@@ -14,13 +14,16 @@ app.use(function(req, res, next) {
     next();
 });
 
+let tolgaStok
+let amniStok
+
 async function Basla() {
     // this is our MongoDB database
     const connection = await mongodb.MongoClient.connect(mongoUrl, { useNewUrlParser: true })
     const cnn = connection.db('tolg')
     const data = cnn.collection('data')
-    const tolgaStok = cnn.collection('tolga-stok')
-    const amniStok = cnn.collection('amni-stok')
+    tolgaStok = cnn.collection('tolga-stok')
+    amniStok = cnn.collection('amni-stok')
 
     app.get('/getSawData', async (req, res) => {
         const allData = await data.find().toArray()
