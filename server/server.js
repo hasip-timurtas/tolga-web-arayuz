@@ -80,6 +80,7 @@ function ManuelStok(stokAdi){
     app.post(addNewItemUrl, async (req, res) => {
         const data = req.body
         await stokDb.insertOne(data)
+        res.send('success')
     })
 }
 

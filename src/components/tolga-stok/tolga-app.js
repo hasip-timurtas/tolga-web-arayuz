@@ -222,6 +222,7 @@ export default class SawApp extends React.Component {
     
 
     newNoteRender() {
+        const {alertIsOpen, alertMessage, alertType} = this.state
         return (
             <form className="new-note" onSubmit={this.addNote.bind(this)}>
                 <div className="row">
@@ -270,7 +271,8 @@ export default class SawApp extends React.Component {
                     <div className="col-md-1 form-group">
                             <button type="submit" className="btn btn-danger add-post" onClick={e=> this.setState({newNote:false})} >Cancel</button>
                     </div>
-                </div> 
+                    <Alert alertIsOpen={alertIsOpen} type={alertType} message={alertMessage}  />
+                </div>
             </form>
         )
 
