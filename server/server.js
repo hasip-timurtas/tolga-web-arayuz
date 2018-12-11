@@ -79,7 +79,7 @@ function ManuelStok(stokAdi){
 
     app.post(addNewItemUrl, async (req, res) => {
         const data = req.body
-        await tolgaStok.insertOne(data)
+        await stokDb.insertOne(data)
     })
 }
 
