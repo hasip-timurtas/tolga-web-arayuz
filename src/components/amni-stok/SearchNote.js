@@ -6,7 +6,7 @@ export default class SearchNote extends React.Component {
 
     loadData() {
         if (this.props.searchText != '') { // if text is empty return []
-            return this.props.notes.filter(x=> x.name.toLowerCase().includes(this.props.searchText.toLowerCase()))
+            return this.props.notes.filter(x=> x.stokKodu.toLowerCase().includes(this.props.searchText.toLowerCase()))
         } else {
             return [];
         }

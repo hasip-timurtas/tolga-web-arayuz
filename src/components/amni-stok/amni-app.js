@@ -226,22 +226,12 @@ export default class SawApp extends React.Component {
             <form className="new-note" onSubmit={this.addNote.bind(this)}>
                 <div className="row">
                     <div className="col-md-6 form-group">
-                            <input type="text" className="form-control" name="name" placeholder="name" ref="name" required/>
-                    </div>
-                </div>
-                <div className="row">
-                    <div className="col-md-6 form-group">
                             <input type="text" className="form-control" name="stokKodu" placeholder="stock code" ref="stokKodu"/>
                     </div>
                 </div>
                 <div className="row">
                     <div className="col-md-6 form-group">
                             <input type="text" className="form-control" name="price" placeholder="price" ref="price"/>
-                    </div>
-                </div>
-                <div className="row">
-                    <div className="col-md-6 form-group">
-                            <input type="text" className="form-control" name="category" placeholder="category" ref="category"/>
                     </div>
                 </div>
                 <div className="row">
