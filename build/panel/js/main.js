@@ -1,15 +1,4 @@
-/* eslint-disable object-shorthand */
-
-/* global Chart, CustomTooltips, getStyle, hexToRgba */
-
-/**
- * --------------------------------------------------------------------------
- * CoreUI Free Boostrap Admin Template (v2.0.0-rc.0): main.js
- * Licensed under MIT (https://coreui.io/license)
- * --------------------------------------------------------------------------
- */
-
-/* eslint-disable no-magic-numbers */
+/*
 // Disable the on-canvas tooltip
 Chart.defaults.global.pointHitDetectionRadius = 1;
 Chart.defaults.global.tooltips.enabled = false;
@@ -327,4 +316,4 @@ var brandBoxChart4 = new Chart($('#social-box-chart-4'), {
   },
   options: brandBoxChartOptions
 });
-//# sourceMappingURL=main.js.map
+*/
