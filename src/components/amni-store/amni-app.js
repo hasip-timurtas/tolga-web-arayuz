@@ -2,12 +2,14 @@ import React from 'react';
 import RecentlyAdded from './RecentlyAdded';
 import SearchNote from './SearchNote';
 import ShowNote from './ShowNote';
-import { auth, db, dbf, CheckProcessRun, GetDataTolgaStok, addTotaStok, addNewItemTolga } from '../firebase'
+import { auth, db, dbf, CheckProcessRun, GetDataAmniStok, addAmniStok, addNewItemAmni } from '../firebase'
 import { Link  } from 'react-router-dom';
 //Notes = new Meteor.Collection("notes");
 import LoadingPage from '../loading'
 //Meteor.subscribe("getNotes");
 import {MhtModal, Alert} from '../mht-modal'
+
+
 
 export default class SawApp extends React.Component {
     constructor() {
@@ -31,7 +33,7 @@ export default class SawApp extends React.Component {
     componentDidMount(){
         CheckProcessRun(runProcess => {
             this.setState({runProcess})
-            GetDataTolgaStok(notes=> this.setState({notes}))// sayfa ilk yüklendiğinde ve her process güncellendiğinde datayıda güncelle
+            GetDataAmniStok(notes=> this.setState({notes}))// sayfa ilk yüklendiğinde ve her process güncellendiğinde datayıda güncelle
         })
 
        // this.showAlert('success', 'bu bir tankerdir!')
@@ -92,7 +94,7 @@ export default class SawApp extends React.Component {
 
     addMyStock(item){
         item.validBedens = this.state.sizes.filter(e=> e.active).map(e=> ({name: e.name, adet: e.adet}))
-        addTotaStok(item, e=> GetDataTolgaStok(notes=> this.setState({notes})))// sayfa ilk yüklendiğinde ve her process güncellendiğinde datayıda güncelle)
+        addAmniStok(item, e=> GetDataAmniStok(notes=> this.setState({notes})))// sayfa ilk yüklendiğinde ve her process güncellendiğinde datayıda güncelle)
         
         if(item.validBedens.length == 0) this.setState({ selectedNote: [] }) // bedenden sıfır kaldıysa arka tarafta zaten refresh yapıyor sende selected noteyi refreshle
         this.showAlert('success', item.name +' başarıyla güncellendi')
@@ -217,7 +219,7 @@ export default class SawApp extends React.Component {
         })
 */
         const newNote = { name, stokKodu, price, category, validBedens, description, files}
-        addNewItemTolga(newNote, result=> this.showAlert('success', name +' başarıyla Eklendi.'))
+        addNewItemAmni(newNote, result=> this.showAlert('success', name +' başarıyla Eklendi.'))
     }
     
 

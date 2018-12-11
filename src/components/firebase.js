@@ -1,6 +1,5 @@
 import * as firebase from 'firebase'
 import 'firebase/firestore'
-import moment from 'moment'
 
 const config = {
     apiKey: "AIzaSyDxDY2_n2XA4mF3RWTFXRuu0XrLCkYYG4s",
@@ -88,7 +87,7 @@ function GetDataSaw(callback){
 }
 
 function GetDataTolgaStok(callback){
-  fetch(url+'tolgaStok').then(function(response) {
+  fetch(url+'getStokTolga').then(function(response) {
     return response.json()
   }).then(function(myJson) {
     callback(myJson)
@@ -96,7 +95,7 @@ function GetDataTolgaStok(callback){
 }
 
 function addTotaStok(item, callback){
-  fetch(url+'addToTolgaStok', {
+  fetch(url+'addStokFromSawTolga', {
     method: 'POST',
     headers: {
       'Accept': 'application/json',
@@ -107,14 +106,14 @@ function addTotaStok(item, callback){
 }
 
 function GetTolgaItemSizes(stokKodu, callback){
-  fetch(url+'getItemSizes/'+ stokKodu).then(function(response) {
+  fetch(url+'getItemSizesTolga/'+ stokKodu).then(function(response) {
     return response.json()
   }).then(function(myJson) {
     callback(myJson)
   }).catch(e=> console.log(e))
 }
 
-async function addNewItem(data, callback){
+async function addNewItemTolga(data, callback){
   // burda kaldık data buraya geliyor. burdan servera gönderilecek.
   const uploadedPics = []
   let index = 0
@@ -125,7 +124,57 @@ async function addNewItem(data, callback){
   data.images = uploadedPics
   data.thumbImg = uploadedPics[0]
   data.newItem = true
-  fetch(url+'newItem', {
+  fetch(url+'newItemTolga', {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(data)
+  }).then(e=> callback(e))
+}
+
+/// AMNİ STORE
+
+function GetDataAmniStok(callback){
+  fetch(url+'getStokAmni').then(function(response) {
+    return response.json()
+  }).then(function(myJson) {
+    callback(myJson)
+  }).catch(e=> console.log(e))
+}
+
+function addAmniStok(item, callback){
+  fetch(url+'addStokFromSawAmni', {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(item)
+  }).then(e=> callback(e))
+}
+
+function GetAmniItemSizes(stokKodu, callback){
+  fetch(url+'getItemSizesAmni/'+ stokKodu).then(function(response) {
+    return response.json()
+  }).then(function(myJson) {
+    callback(myJson)
+  }).catch(e=> console.log(e))
+}
+
+async function addNewItemAmni(data, callback){
+  // burda kaldık data buraya geliyor. burdan servera gönderilecek.
+  const uploadedPics = []
+  let index = 0
+  for (const img of data.files) {
+    await storage.ref('/pics').child(data.stokKodu).child(index+".jpg").put(img).then(e=> uploadedPics.push(e.downloadURL))
+    index++
+  }
+  data.images = uploadedPics
+  data.thumbImg = uploadedPics[0]
+  data.newItem = true
+  fetch(url+'newItemAmni', {
     method: 'POST',
     headers: {
       'Accept': 'application/json',
@@ -140,13 +189,18 @@ export {
   dbf,
   auth,
   GetDataSaw,
-  GetDataTolgaStok,
   GetBuySellData,
   GetAltcoinBuySellData,
   GetServers,
   GetCode,
   CheckProcessRun,
+  // Tolga Stok
+  GetDataTolgaStok,
   addTotaStok,
   GetTolgaItemSizes,
-  addNewItem
+  addNewItemTolga,
+  // Amni Stok
+  GetDataAmniStok,
+  addAmniStok,
+  addNewItemAmni
 }
