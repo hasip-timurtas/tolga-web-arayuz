@@ -33,6 +33,7 @@ class Saw {
 
     async Basla(){
         this.db.ref('tolga/saw/data-processing').set(true)
+        console.log('Veritabanına bağlandı saw dan data yükleme başlıyor.')
         await this.data.deleteMany({})
         const body = await this.GetPage('https://saw.com.tr/magaza/?min_price=0&max_price=9999&per_page=9999') // ALL PRODUCTS
         const jQuery = cheerio.load(body)
@@ -48,6 +49,7 @@ class Saw {
 
         await this.EskiYeniKarsilastir()
         this.db.ref('tolga/saw/data-processing').set(false)
+        console.log('BİTTİ')
     }
 
     async UrunGetirVeKaydet(link){
