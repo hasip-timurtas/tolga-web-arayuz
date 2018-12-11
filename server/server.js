@@ -14,19 +14,16 @@ app.use(function(req, res, next) {
     next();
 });
 
-let tolgaStok
-let amniStok
+let cnn 
 
 async function Basla() {
     // this is our MongoDB database
     const connection = await mongodb.MongoClient.connect(mongoUrl, { useNewUrlParser: true })
-    const cnn = connection.db('tolg')
-    const data = cnn.collection('data')
-    tolgaStok = cnn.collection('tolga-stok')
-    amniStok = cnn.collection('amni-stok')
+    cnn = connection.db('tolg')
+    const sawData = cnn.collection('data')
 
     app.get('/getSawData', async (req, res) => {
-        const allData = await data.find().toArray()
+        const allData = await sawData.find().toArray()
         return res.send(allData)
     })
 
@@ -41,19 +38,20 @@ async function Basla() {
 }
 
 function ManuelStok(stokAdi){
+    const stokDb = cnn.collection(stokAdi+'-stok')
     const getAllStokUrl = '/getStok' + stokAdi
     const addStokUrl = '/addStokFromSaw' + stokAdi
     const getItemSizesUrl = `/getItemSizes${stokAdi}/:stokKodu`
     const addNewItemUrl = '/newItem' + stokAdi
 
     app.get(getAllStokUrl, async (req, res) => {
-        const allData = await tolgaStok.find().toArray()
+        const allData = await stokDb.find().toArray()
         return res.send(allData)
     })
 
     app.get(getItemSizesUrl, async (req, res) => {
         const stokKodu = req.params.stokKodu
-        const item = await tolgaStok.findOne({stokKodu})
+        const item = await stokDb.findOne({stokKodu})
         if(!item) return res.send("[]")
         return res.send(item.validBedens)
     })
@@ -61,19 +59,19 @@ function ManuelStok(stokAdi){
     app.post(addStokUrl, async (req, res) => {
         const data = req.body
         // toganın databaseye ekle, varsa beden güncelle
-        const item = await tolgaStok.findOne({stokKodu: data.stokKodu})
+        const item = await stokDb.findOne({stokKodu: data.stokKodu})
         if(!item){
-            await tolgaStok.insertOne(data)
+            await stokDb.insertOne(data)
         }else{
            
             const eskiValidBeden = item.validBedens
             const yeniValidBedens = data.validBedens
             if(yeniValidBedens.length == 0){
                 // aktif beden kalmadı ürüünü sil.
-                await tolgaStok.removeOne({stokKodu: data.stokKodu})
+                await stokDb.removeOne({stokKodu: data.stokKodu})
                 return res.send('ürün silindi')
             }
-            await tolgaStok.replaceOne({stokKodu: item.stokKodu }, data)
+            await stokDb.replaceOne({stokKodu: item.stokKodu }, data)
 
         }
         res.send('POST request to the homepage')

@@ -167,7 +167,7 @@ export default class SawApp extends React.Component {
         return (
             <div className="row">
                 <div className="col-md-8">
-                    <h2>Tolga Stok</h2> <br/>
+                    <h2>Amni Stok</h2> <br/>
                     <SearchNote showNote={this.showNote.bind(this)} selectedNotem={selectedNote} UpdateSearch={e=>this.setState({searchText: e})} 
                     searchText={searchText}
                     notes={notes} />
