@@ -221,8 +221,14 @@ export default class SawApp extends React.Component {
     
 
     newNoteRender() {
+        const {alertIsOpen, alertMessage, alertType} = this.state
         return (
             <form className="new-note" onSubmit={this.addNote.bind(this)}>
+                <div className="row">
+                    <div className="col-md-6 form-group">
+                            <input type="text" className="form-control" name="name" placeholder="name" ref="name" required/>
+                    </div>
+                </div>
                 <div className="row">
                     <div className="col-md-6 form-group">
                             <input type="text" className="form-control" name="stokKodu" placeholder="stock code" ref="stokKodu"/>
@@ -231,6 +237,11 @@ export default class SawApp extends React.Component {
                 <div className="row">
                     <div className="col-md-6 form-group">
                             <input type="text" className="form-control" name="price" placeholder="price" ref="price"/>
+                    </div>
+                </div>
+                <div className="row">
+                    <div className="col-md-6 form-group">
+                            <input type="text" className="form-control" name="category" placeholder="category" ref="category"/>
                     </div>
                 </div>
                 <div className="row">
@@ -254,12 +265,15 @@ export default class SawApp extends React.Component {
                 </div>   
                 <div className="row">
                     <div className="col-md-1 form-group">
-                            <button type="submit" className="btn btn-success add-post">Add Item</button>
+                        <button type="submit" className="btn btn-success add-post">Add Item</button>
                     </div>
-                    <div className="col-md-1 form-group">
-                            <button type="submit" className="btn btn-danger add-post" onClick={e=> this.setState({newNote:false})} >Cancel</button>
+                    <div className="col-md-2 form-group">
+                        <button type="submit" className="btn btn-danger add-post" onClick={e=> this.setState({newNote:false})}> {"< Back"} </button>
                     </div>
-                </div> 
+                </div>
+                <div className="row">
+                    <Alert alertIsOpen={alertIsOpen} type={alertType} message={alertMessage}  />
+                </div>
             </form>
         )
 

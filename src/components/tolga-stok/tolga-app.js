@@ -266,11 +266,13 @@ export default class SawApp extends React.Component {
                 </div>   
                 <div className="row">
                     <div className="col-md-1 form-group">
-                            <button type="submit" className="btn btn-success add-post">Add Item</button>
+                        <button type="submit" className="btn btn-success add-post">Add Item</button>
                     </div>
                     <div className="col-md-1 form-group">
-                            <button type="submit" className="btn btn-danger add-post" onClick={e=> this.setState({newNote:false})} >Cancel</button>
+                        <button type="submit" className="btn btn-danger add-post" onClick={e=> this.setState({newNote:false})}> {"< Back"} </button>
                     </div>
+                </div>
+                <div className="row">
                     <Alert alertIsOpen={alertIsOpen} type={alertType} message={alertMessage}  />
                 </div>
             </form>
