@@ -16,7 +16,7 @@ if (!firebase.apps.length) {
 
 // server url
 //let url = 'http://178.62.203.163:3005/'
-const url = 'http://localhost:3005/' // TEST
+const url = 'http://127.0.0.1:3005/' // TEST
 
 const db = firebase.database();
 const dbf = firebase.firestore();
