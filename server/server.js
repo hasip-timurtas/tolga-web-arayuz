@@ -22,48 +22,17 @@ async function Basla() {
     const tolgaStok = cnn.collection('tolga-stok')
     const amniStok = cnn.collection('amni-stok')
 
-    app.get('/', async (req, res) => {
+    app.get('/getSawData', async (req, res) => {
         const allData = await data.find().toArray()
         return res.send(allData)
     })
 
-    app.get('/tolgaStok', async (req, res) => {
-        const allData = await tolgaStok.find().toArray()
-        return res.send(allData)
+    app.get('/', (req, res) => {
+        res.send('Api')
     })
 
-    app.get('/getTolgaItemSizes/:stokKodu', async (req, res) => {
-        const stokKodu = req.params.stokKodu
-        const item = await tolgaStok.findOne({stokKodu})
-        if(!item) return res.send("[]")
-        return res.send(item.validBedens)
-    })
-
-    app.post('/addToTolgaStok', async (req, res) => {
-        const data = req.body
-        // toganın databaseye ekle, varsa beden güncelle
-        const item = await tolgaStok.findOne({stokKodu: data.stokKodu})
-        if(!item){
-            await tolgaStok.insertOne(data)
-        }else{
-           
-            const eskiValidBeden = item.validBedens
-            const yeniValidBedens = data.validBedens
-            if(yeniValidBedens.length == 0){
-                // aktif beden kalmadı ürüünü sil.
-                await tolgaStok.removeOne({stokKodu: data.stokKodu})
-                return res.send('ürün silindi')
-            }
-            await tolgaStok.replaceOne({stokKodu: item.stokKodu }, data)
-
-        }
-        res.send('POST request to the homepage')
-    })
-
-    app.post('/newItemTolga', async (req, res) => {
-        const data = req.body
-        await tolgaStok.insertOne(data)
-    })
+    ManuelStok('Tolga')
+    ManuelStok('Amni')
 
     app.listen(port, () => console.log(`Example app listening on port ${port}!`))
 }

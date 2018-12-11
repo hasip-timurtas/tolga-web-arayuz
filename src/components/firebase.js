@@ -79,7 +79,7 @@ function CheckProcessRun(callback){
 
 
 function GetDataSaw(callback){
-  fetch(url).then(function(response) {
+  fetch(url+'getSawData').then(function(response) {
     return response.json()
   }).then(function(myJson) {
     callback(myJson)

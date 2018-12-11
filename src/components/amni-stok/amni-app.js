@@ -190,11 +190,8 @@ export default class SawApp extends React.Component {
 
     addNote(event) {
         event.preventDefault();
-        var name = this.refs.name.value.trim();
         var stokKodu = this.refs.stokKodu.value.trim();
         var price = this.refs.price.value.trim();
-        var category = this.refs.category.value.trim();
-        //var sizes = this.refs.sizes.value.trim();
         var description = this.refs.description.value.trim();
         var files = Array.from(this.refs.file.files)
         const allSizes = [{name:'s', adet: this.refs.sizeS.value}, {name:'m', adet:this.refs.sizeM.value}, {name:'l', adet:this.refs.sizeL.value}, {name:'xl', adet:this.refs.sizeXL.value}, {name:'xxl', adet:this.refs.sizeXXL.value}]
@@ -218,8 +215,8 @@ export default class SawApp extends React.Component {
             }
         })
 */
-        const newNote = { name, stokKodu, price, category, validBedens, description, files}
-        addNewItemAmni(newNote, result=> this.showAlert('success', name +' başarıyla Eklendi.'))
+        const newNote = { stokKodu, price, validBedens, description, files}
+        addNewItemAmni(newNote, result=> this.showAlert('success', stokKodu +' başarıyla Eklendi.'))
     }
     
 
@@ -228,22 +225,12 @@ export default class SawApp extends React.Component {
             <form className="new-note" onSubmit={this.addNote.bind(this)}>
                 <div className="row">
                     <div className="col-md-6 form-group">
-                            <input type="text" className="form-control" name="name" placeholder="name" ref="name" required/>
-                    </div>
-                </div>
-                <div className="row">
-                    <div className="col-md-6 form-group">
                             <input type="text" className="form-control" name="stokKodu" placeholder="stock code" ref="stokKodu"/>
                     </div>
                 </div>
                 <div className="row">
                     <div className="col-md-6 form-group">
                             <input type="text" className="form-control" name="price" placeholder="price" ref="price"/>
-                    </div>
-                </div>
-                <div className="row">
-                    <div className="col-md-6 form-group">
-                            <input type="text" className="form-control" name="category" placeholder="category" ref="category"/>
                     </div>
                 </div>
                 <div className="row">

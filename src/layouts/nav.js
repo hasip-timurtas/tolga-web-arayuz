@@ -5,6 +5,9 @@ const Nav = () =>
 <nav className="sidebar-nav">
     <ul className="nav">
         <li className="nav-item">
+            <Link className="nav-link" to={"/amni-stok"}><i className="nav-icon fa fa-shopping-cart fa-3x" /> Amni Stok</Link>
+        </li>
+        <li className="nav-item">
             <Link className="nav-link" to={"/tolga-stok"}><i className="nav-icon fa fa-shopping-cart fa-3x" /> Tolga Stok</Link>
         </li>
         <li className="nav-item">
